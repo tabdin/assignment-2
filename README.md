@@ -64,6 +64,7 @@ latitude  | longitude  | name          | description      | icon       | color
 | color | string | No | Line color (default: blue) |
 | weight | int | No | Line thickness (default: 3) |
 | opacity | float | No | Line opacity 0-1 (default: 0.8) |
+| **reverse** | bool | No | `TRUE` or `FALSE` to reverse animation direction (default: FALSE) |
 
 **Coordinate Formats:**
 - JSON: `[[40.7128,-74.0060],[34.0522,-118.2437]]`
@@ -71,9 +72,9 @@ latitude  | longitude  | name          | description      | icon       | color
 
 **Example:**
 ```
-name              | coordinates                                           | color | weight | opacity
-NYC to LA         | [[40.7128,-74.0060],[34.0522,-118.2437]]             | blue  | 3      | 0.7
-Chicago to Miami  | [[41.8781,-87.6298],[25.7617,-80.1918]]              | red   | 4      | 0.8
+name              | coordinates                                           | color | weight | opacity | reverse
+NYC to LA         | [[40.7128,-74.0060],[34.0522,-118.2437]]             | blue  | 3      | 0.7      | TRUE
+Chicago to Miami  | [[41.8781,-87.6298],[25.7617,-80.1918]]              | red   | 4      | 0.8      | FALSE
 ```
 
 ### 3. polygons (Areas/Boundaries)
@@ -184,3 +185,17 @@ The script generates an interactive HTML map with:
 ## Example Data
 
 See `sample_map_data.xlsx` for a complete example with all sheet types populated.
+
+## New Feature: Animated Routes
+
+The "Lines" feature has been upgraded to be more dynamic! Instead of just showing static `PolyLine` paths, this script now uses `folium.plugins.AntPath` to create **animated "marching ant" routes**.
+
+This is perfect for visualizing travel, supply chains, or any directional flow on your map.
+
+### How It Works
+
+This new feature works automatically on all data in your **`lines`** sheet. We've also added a new column for customization:
+
+* **`reverse`**: You can now add a `reverse` column to your `lines` sheet.
+    * Set the value to `TRUE` to make the animation flow in the reverse direction (from the last point to the first).
+    * Set it to `FALSE` or leave it blank for the default forward animation.
