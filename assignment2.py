@@ -15,7 +15,7 @@ Expected Excel tab structure:
 
 import pandas as pd
 import folium
-from folium.plugins import HeatMap, MarkerCluster
+from folium.plugins import HeatMap, MarkerCluster, AntPath
 import json
 
 
@@ -76,8 +76,26 @@ def add_markers(map_obj, df_markers, use_cluster=True):
 
 
 def add_lines(map_obj, df_lines):
-    pass
+    # Add feature for ant path 
+    # where there is a flux animation (like walking of ants) along a polyline
+    if df_lines is None or df_lines.empty:
+        return
 
+    for _, row in df_lines.iterrows():
+        coordinates = parse_coordinate_string(row.get('coordinates'))
+        if coordinates:
+            folium.plugins.AntPath( 
+                locations=coordinates,
+                color = row.get("color", "blue"),
+                weight = row.get("weight", 3),
+                opacity = row.get("opacity", 0.7),
+                popup=row.get('name', 'Ant line'),
+
+                # AntPath-specific specifications
+                dash_array=row.get("dash_array", [10, 20]),
+                # Reverse the direction of animation
+                reverse=row.get("reverse", False),
+            ).add_to(map_obj)
 
 def add_polygons(map_obj, df_polygons):
     """Add polygons/areas from dataframe to map."""
@@ -167,6 +185,7 @@ def create_map_from_excel(excel_file, output_file='map.html',
     df_polygons = excel_data.get('polygons')
     df_heatmap = excel_data.get('heatmap')
     df_circles = excel_data.get('circles')
+    df_lines = excel_data.get('lines')
 
     # Calculate map center if not provided
     if center_lat is None or center_lon is None:
@@ -209,6 +228,9 @@ def create_map_from_excel(excel_file, output_file='map.html',
 
     print("Adding heatmap...")
     add_heatmap(m, df_heatmap)
+
+    print("Adding lines...")
+    add_lines(m, df_lines)
 
     # Add layer control
     folium.LayerControl().add_to(m)
