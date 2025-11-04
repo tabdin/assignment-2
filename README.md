@@ -2,6 +2,8 @@
 
 A Python script that parses an Excel spreadsheet with multiple tabs containing different types of map data and creates an interactive Folium map.
 
+GH Page: https://tabdin.github.io/assignment-2/my_map.html
+
 ## Features
 
 - **Markers**: Point locations with custom icons and colors
